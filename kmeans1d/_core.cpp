@@ -50,11 +50,11 @@ class Matrix {
         data.resize(num_rows * num_cols);
     }
 
-    T get(u32 i, u32 j) {
+    inline T get(u32 i, u32 j) {
         return data[i * num_cols + j];
     }
 
-    void set(u32 i, u32 j, T value) {
+    inline void set(u32 i, u32 j, T value) {
         data[i * num_cols + j] = value;
     }
 };

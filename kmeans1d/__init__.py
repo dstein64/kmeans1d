@@ -8,9 +8,10 @@ _DLL = ctypes.cdll.LoadLibrary(kmeans1d._core.__file__)
 _UINT32_MAX = 0xffffffff
 
 
-def cluster(array: Sequence[float], k: int) -> Tuple[List, List]:
-    # TODO: Sort 'array'
+# TODO: Sort 'array' before clustering, and then unsort.
 
+
+def cluster(array: Sequence[float], k: int) -> Tuple[List, List]:
     assert 0 < k <= _UINT32_MAX, f'Invalid k: {k}'
     n = len(array)
 
