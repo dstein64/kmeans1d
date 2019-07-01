@@ -1,4 +1,5 @@
 import ctypes
+import os
 from typing import List, Sequence, Tuple
 
 import kmeans1d._core
@@ -6,6 +7,10 @@ import kmeans1d._core
 _DLL = ctypes.cdll.LoadLibrary(kmeans1d._core.__file__)
 
 _UINT32_MAX = 0xffffffff
+
+version_txt = os.path.join(os.path.dirname(__file__), 'version.txt')
+with open(version_txt, 'r') as f:
+    __version__ = f.read().strip()
 
 
 # TODO: Sort 'array' before clustering, and then unsort.
