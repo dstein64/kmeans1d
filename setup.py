@@ -24,7 +24,7 @@ setup(
           'Operating System :: Microsoft :: Windows',
           'Programming Language :: Python :: 3',
     ],
-    description='A Python package for optimal 1D k-means clustering.',
+    description='A Python package for optimal 1D k-means clustering',
     ext_modules=[extension],
     keywords=['k-means', 'machine learning', 'optimization'],
     license='MIT',

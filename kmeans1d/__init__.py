@@ -6,8 +6,6 @@ import kmeans1d._core
 
 _DLL = ctypes.cdll.LoadLibrary(kmeans1d._core.__file__)
 
-_UINT32_MAX = 0xffffffff
-
 version_txt = os.path.join(os.path.dirname(__file__), 'version.txt')
 with open(version_txt, 'r') as f:
     __version__ = f.read().strip()
@@ -17,16 +15,15 @@ with open(version_txt, 'r') as f:
 
 
 def cluster(array: Sequence[float], k: int) -> Tuple[List, List]:
-    assert 0 < k <= _UINT32_MAX, f'Invalid k: {k}'
+    assert k > 0, f'Invalid k: {k}'
     n = len(array)
-
-    assert 0 < n <= _UINT32_MAX, f'Invalid len(array): {n}'
-    assert k <= n, f'Invalid k: {k}, len(array): {n}'
+    assert n > 0, f'Invalid len(array): {n}'
+    k = min(k, n)
 
     c_array = (ctypes.c_double * n)(*array)
-    c_n = ctypes.c_uint32(n)
-    c_k = ctypes.c_uint32(k)
-    c_clusters = (ctypes.c_uint32 * n)()
+    c_n = ctypes.c_ulong(n)
+    c_k = ctypes.c_ulong(k)
+    c_clusters = (ctypes.c_ulong * n)()
     c_centroids = (ctypes.c_double * k)()
 
     _DLL.cluster(c_array, c_n, c_k, c_clusters, c_centroids)

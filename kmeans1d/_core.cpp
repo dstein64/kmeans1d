@@ -7,7 +7,7 @@
 
 using namespace std;
 
-typedef uint32_t u32;
+typedef unsigned long ulong;
 
 /*
  *  Calculates cluster costs in O(1) using prefix sum arrays.
@@ -17,17 +17,17 @@ class CostCalculator {
     vector<double> cumsum2;
 
   public:
-    CostCalculator(double* sorted_array, u32 n) {
+    CostCalculator(double* sorted_array, ulong n) {
         cumsum.push_back(0.0);
         cumsum2.push_back(0.0);
-        for (u32 i = 0; i < n; ++i) {
+        for (ulong i = 0; i < n; ++i) {
             double x = sorted_array[i];
             cumsum.push_back(x + cumsum[i]);
             cumsum2.push_back(x * x + cumsum2[i]);
         }
     }
 
-    double calc(u32 i, u32 j) {
+    double calc(ulong i, ulong j) {
         if (j < i) return 0.0;
         double mu = (cumsum[j + 1] - cumsum[i]) / (j - i + 1);
         double result = cumsum2[j + 1] - cumsum2[i];
@@ -40,21 +40,21 @@ class CostCalculator {
 template <typename T>
 class Matrix {
     vector<T> data;
-    u32 num_rows;
-    u32 num_cols;
+    ulong num_rows;
+    ulong num_cols;
 
   public:
-    Matrix(u32 num_rows, u32 num_cols) {
+    Matrix(ulong num_rows, ulong num_cols) {
         this->num_rows = num_rows;
         this->num_cols = num_cols;
         data.resize(num_rows * num_cols);
     }
 
-    inline T get(u32 i, u32 j) {
+    inline T get(ulong i, ulong j) {
         return data[i * num_cols + j];
     }
 
-    inline void set(u32 i, u32 j, T value) {
+    inline void set(ulong i, ulong j, T value) {
         data[i * num_cols + j] = value;
     }
 };
@@ -62,33 +62,33 @@ class Matrix {
 extern "C" {
 void cluster(
         double* sorted_array,
-        u32 n,
-        u32 k,
-        u32* clusters,
+        ulong n,
+        ulong k,
+        ulong* clusters,
         double* centroids) {
     CostCalculator cost_calculator(sorted_array, n);
     Matrix<double> D(k, n);
-    Matrix<u32> T(k, n);
+    Matrix<ulong> T(k, n);
 
-    for (u32 i = 0; i < n; ++i) {
+    for (ulong i = 0; i < n; ++i) {
         D.set(0, i, cost_calculator.calc(0, i));
         T.set(0, i, 0);
     }
 
     // TODO: REPLACE ALL THE FOLLOWING WITH SMAWK. NO EXPLICIT C MATRIX.
-    for (u32 k_ = 1; k_ < k; ++k_) {
+    for (ulong k_ = 1; k_ < k; ++k_) {
         Matrix<double> C(n, n);
-        for (u32 i = 0; i < n; ++i) {
-            for (u32 j = 0; j < n; ++j) {
-                u32 col = i < j - 1 ? i : j - 1; // TODO: underflow? This will ultimately be deleted.
+        for (ulong i = 0; i < n; ++i) {
+            for (ulong j = 0; j < n; ++j) {
+                ulong col = i < j - 1 ? i : j - 1; // TODO: underflow? This will ultimately be deleted.
                 double x = D.get(k_ - 1, col) + cost_calculator.calc(j, i);
                 C.set(i, j, x);
             }
         }
-        for (u32 i = 0; i < n; ++i) {
+        for (ulong i = 0; i < n; ++i) {
             double min = numeric_limits<double>::max();
-            u32 argmin = 0;
-            for (u32 j = 0; j < n; ++j) {
+            ulong argmin = 0;
+            for (ulong j = 0; j < n; ++j) {
                 double x = C.get(i, j);
                 if (x < min) {
                     min = x;
@@ -100,14 +100,16 @@ void cluster(
         }
     }
 
-    u32 t = n;
-    u32 k_ = k - 1;
-    u32 n_ = n - 1;
+    // The usage of unsigned types makes the code slightly more complicated,
+    // due to the avoidance of underflow.
+    ulong t = n;
+    ulong k_ = k - 1;
+    ulong n_ = n - 1;
     do {
-        u32 t_ = t;
+        ulong t_ = t;
         t = T.get(k_, n_);
         double centroid = 0.0;
-        for (u32 i = t; i < t_; ++i) {
+        for (ulong i = t; i < t_; ++i) {
             clusters[i] = k_;
             centroid += (sorted_array[i] - centroid) / (i - t + 1);
         }
