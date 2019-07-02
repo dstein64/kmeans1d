@@ -52,7 +52,7 @@ References
 ----------
 
 [1] Wu, Xiaolin. "Optimal Quantization by Matrix Searching." Journal of Algorithms 12, no. 4
-(December 1, 1991): 663–73. https://doi.org/10.1016/0196-6774(91)90039-2.
+(December 1, 1991): 663–73.
 
 [2] Grønlund, Allan, Kasper Green Larsen, Alexander Mathiasen, Jesper Sindahl Nielsen, Stefan Schneider,
 and Mingzhou Song. “Fast Exact K-Means, k-Medians and Bregman Divergence Clustering in 1D.”
