@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <iostream> // TODO: DELETE
-#include <limits> // TODO: maybe delete
+#include <limits>
 #include <vector>
 
 using namespace std;
@@ -86,7 +86,7 @@ void cluster(
             }
         }
         for (ulong i = 0; i < n; ++i) {
-            double min = numeric_limits<double>::max();
+            double min = numeric_limits<double>::infinity();
             ulong argmin = 0;
             for (ulong j = 0; j < n; ++j) {
                 double x = C.get(i, j);
@@ -100,11 +100,19 @@ void cluster(
         }
     }
 
-    // The usage of unsigned types makes the code slightly more complicated,
-    // due to the avoidance of underflow.
+    // ***************************************************
+    // * Extract cluster assignments by backtracking
+    // ***************************************************
+
+    // TODO: This is currently O(kn) but can be modified to be O(n).
+    //       Details are in section 3 of (Grønlund et al., 2017).
+
     ulong t = n;
     ulong k_ = k - 1;
     ulong n_ = n - 1;
+    // The do/while loop was used in place of:
+    //   for (k_ = k - 1; k_ >= 0; --k_)
+    // to avoid wraparound of an unsigned type.
     do {
         ulong t_ = t;
         t = T.get(k_, n_);

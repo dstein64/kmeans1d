@@ -1,8 +1,12 @@
+from collections import namedtuple
 import ctypes
 import os
 from typing import List, Sequence, Tuple
 
 import kmeans1d._core
+
+
+Clustered = namedtuple('Clustered', 'clusters centroids')
 
 _DLL = ctypes.cdll.LoadLibrary(kmeans1d._core.__file__)
 
@@ -11,9 +15,13 @@ with open(version_txt, 'r') as f:
     __version__ = f.read().strip()
 
 
-# TODO: profile sorting/de-sorting relative to clustering, and optimize if it's slow
-
 def cluster(array: Sequence[float], k: int) -> Tuple[List, List]:
+    """
+    :param array: A sequence of floats
+    :param k: Number of clusters (int)
+    :return: A tuple with (clusters, centroids)
+    """
+    # TODO: profile sorting/de-sorting relative to clustering, and optimize if it's slow
     assert k > 0, f'Invalid k: {k}'
     n = len(array)
     assert n > 0, f'Invalid len(array): {n}'
@@ -34,7 +42,7 @@ def cluster(array: Sequence[float], k: int) -> Tuple[List, List]:
     clusters = list(c_clusters)
     # Order clusters according to the array ordering before sorting
     clusters = [clusters[undo_sort_lookup[x]] for x in range(len(array))]
-
     centroids = list(c_centroids)
-    output = (clusters, centroids)
+
+    output = Clustered(clusters=clusters, centroids=centroids)
     return output
