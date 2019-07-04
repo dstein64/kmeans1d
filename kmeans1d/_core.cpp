@@ -1,13 +1,99 @@
 #include <Python.h>
 
 #include <cstdint>
-#include <iostream> // TODO: DELETE
-#include <limits>
+#include <functional>
+#include <numeric>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
 
 typedef unsigned long ulong;
+
+/*
+ *  Internal implementation of the SMAWK algorithm.
+ */
+template <typename T>
+void _smawk(
+        const vector<ulong>& rows,
+        const vector<ulong>& cols,
+        const function<T(ulong, ulong)>& lookup,
+        vector<ulong>* result) {
+    // Recursion base case
+    if (rows.size() == 0) return;
+
+    // ********************************
+    // * REDUCE
+    // ********************************
+
+    vector<ulong> _cols;  // Stack of columns to keep
+    for (ulong col : cols) {
+        while (true) {
+            if (_cols.size() == 0) break;
+            ulong row = rows[_cols.size() - 1];
+            if (lookup(row, col) >= lookup(row, _cols.back()))
+                break;
+            _cols.pop_back();
+        }
+        if (_cols.size() < rows.size())
+            _cols.push_back(col);
+    }
+
+    // Call recursively on odd-indexed rows
+    vector<ulong> odd_rows;
+    for (ulong i = 1; i < rows.size(); i += 2) {
+        odd_rows.push_back(rows[i]);
+    }
+    _smawk(odd_rows, _cols, lookup, result);
+
+    unordered_map<ulong, ulong> col_idx_lookup;
+    for (ulong idx = 0; idx < _cols.size(); ++idx) {
+        col_idx_lookup[_cols[idx]] = idx;
+    }
+
+    // ********************************
+    // * INTERPOLATE
+    // ********************************
+
+    // Fill-in even-indexed rows
+    ulong start = 0;
+    for (ulong r = 0; r < rows.size(); r += 2) {
+        ulong row = rows[r];
+        ulong stop = _cols.size() - 1;
+        if (r < rows.size() - 1)
+            stop = col_idx_lookup[(*result)[rows[r + 1]]];
+        ulong argmin = _cols[start];
+        T min = lookup(row, argmin);
+        for (ulong c = start + 1; c <= stop; ++c) {
+            T value = lookup(row, _cols[c]);
+            if (c == start || value < min) {
+                argmin = _cols[c];
+                min = value;
+            }
+        }
+        (*result)[row] = argmin;
+        start = stop;
+    }
+}
+
+/*
+ *  Interface for the SMAWK algorithm, for finding the minimum value in each row
+ *  of an implicitly-defined totally monotone matrix.
+ */
+template <typename T>
+vector<ulong> smawk(
+        const ulong num_rows,
+        const ulong num_cols,
+        const function<T(ulong, ulong)>& lookup) {
+    vector<ulong> result;
+    result.resize(num_rows);
+    vector<ulong> rows(num_rows);
+    iota(begin(rows), end(rows), 0);
+    vector<ulong> cols(num_cols);
+    iota(begin(cols), end(cols), 0);
+    _smawk<T>(rows, cols, lookup, &result);
+    return result;
+}
 
 /*
  *  Calculates cluster costs in O(1) using prefix sum arrays.
@@ -77,24 +163,14 @@ void cluster(
 
     // TODO: REPLACE ALL THE FOLLOWING WITH SMAWK. NO EXPLICIT C MATRIX.
     for (ulong k_ = 1; k_ < k; ++k_) {
-        Matrix<double> C(n, n);
-        for (ulong i = 0; i < n; ++i) {
-            for (ulong j = 0; j < n; ++j) {
-                ulong col = i < j - 1 ? i : j - 1; // TODO: underflow? This will ultimately be deleted.
-                double x = D.get(k_ - 1, col) + cost_calculator.calc(j, i);
-                C.set(i, j, x);
-            }
-        }
-        for (ulong i = 0; i < n; ++i) {
-            double min = numeric_limits<double>::infinity();
-            ulong argmin = 0;
-            for (ulong j = 0; j < n; ++j) {
-                double x = C.get(i, j);
-                if (x < min) {
-                    min = x;
-                    argmin = j;
-                }
-            }
+        auto C = [&D, &k_, &cost_calculator](ulong i, ulong j) -> double {
+            ulong col = i < j - 1 ? i : j - 1; // TODO: underflow?
+            return D.get(k_ - 1, col) + cost_calculator.calc(j, i);
+        };
+        vector<ulong> row_argmins = smawk<double>(n, n, C);
+        for (ulong i = 0; i < row_argmins.size(); ++i) {
+            ulong argmin = row_argmins[i];
+            double min = C(i, argmin);
             D.set(k_, i, min);
             T.set(k_, i, argmin);
         }
