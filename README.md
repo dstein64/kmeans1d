@@ -2,7 +2,7 @@ kmeans1d
 ========
 
 A Python library with an implementation of *k*-means clustering on 1D data, based on the algorithm
-in (Xiaolin 1991), as presented in section 2.2 of (Grønlund et al., 2017).
+in (Xiaolin 1991), as presented in section 2.2 of (Gronlund et al., 2017).
 
 Globally optimal *k*-means clustering is NP-hard for multi-dimensional data. LLoyd's algorithm is a
 popular approach for finding a locally optimal solution. For 1-dimensional data, there are polynomial time
@@ -52,8 +52,8 @@ References
 ----------
 
 [1] Wu, Xiaolin. "Optimal Quantization by Matrix Searching." Journal of Algorithms 12, no. 4
-(December 1, 1991): 663–73.
+(December 1, 1991): 663
 
-[2] Grønlund, Allan, Kasper Green Larsen, Alexander Mathiasen, Jesper Sindahl Nielsen, Stefan Schneider,
-and Mingzhou Song. “Fast Exact K-Means, k-Medians and Bregman Divergence Clustering in 1D.”
+[2] Gronlund, Allan, Kasper Green Larsen, Alexander Mathiasen, Jesper Sindahl Nielsen, Stefan Schneider,
+and Mingzhou Song. "Fast Exact K-Means, k-Medians and Bregman Divergence Clustering in 1D."
 ArXiv:1701.07204 [Cs], January 25, 2017. http://arxiv.org/abs/1701.07204.
