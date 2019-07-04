@@ -26,7 +26,7 @@ void _smawk(
     // * REDUCE
     // ********************************
 
-    vector<ulong> _cols;  // Stack of columns to keep
+    vector<ulong> _cols;  // Stack of surviving columns
     for (ulong col : cols) {
         while (true) {
             if (_cols.size() == 0) break;
