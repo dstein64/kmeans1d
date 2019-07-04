@@ -161,7 +161,6 @@ void cluster(
         T.set(0, i, 0);
     }
 
-    // TODO: REPLACE ALL THE FOLLOWING WITH SMAWK. NO EXPLICIT C MATRIX.
     for (ulong k_ = 1; k_ < k; ++k_) {
         auto C = [&D, &k_, &cost_calculator](ulong i, ulong j) -> double {
             ulong col = i < j - 1 ? i : j - 1; // TODO: underflow?
