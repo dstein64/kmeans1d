@@ -146,6 +146,9 @@ class Matrix {
 };
 
 extern "C" {
+// "__declspec(dllexport)" causes the function to be exported when compiling with
+// Visual Studio on Windows. Otherwise, the function is not exported and the code
+// raises "AttributeError: function 'cluster' not found".
 #if defined (_MSC_VER)
 __declspec(dllexport)
 #endif
