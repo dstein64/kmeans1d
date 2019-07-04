@@ -146,6 +146,9 @@ class Matrix {
 };
 
 extern "C" {
+#if defined (_MSC_VER)
+__declspec(dllexport)
+#endif
 void cluster(
         double* sorted_array,
         ulong n,
@@ -163,7 +166,7 @@ void cluster(
 
     for (ulong k_ = 1; k_ < k; ++k_) {
         auto C = [&D, &k_, &cost_calculator](ulong i, ulong j) -> double {
-            ulong col = i < j - 1 ? i : j - 1; // TODO: underflow?
+            ulong col = i < j - 1 ? i : j - 1;
             return D.get(k_ - 1, col) + cost_calculator.calc(j, i);
         };
         vector<ulong> row_argmins = smawk<double>(n, n, C);
