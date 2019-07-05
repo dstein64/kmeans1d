@@ -103,11 +103,11 @@ class CostCalculator {
     vector<double> cumsum2;
 
   public:
-    CostCalculator(double* sorted_array, ulong n) {
+    CostCalculator(double* array, ulong n) {
         cumsum.push_back(0.0);
         cumsum2.push_back(0.0);
         for (ulong i = 0; i < n; ++i) {
-            double x = sorted_array[i];
+            double x = array[i];
             cumsum.push_back(x + cumsum[i]);
             cumsum2.push_back(x * x + cumsum2[i]);
         }
@@ -185,7 +185,10 @@ void cluster(
     // * Extract cluster assignments by backtracking
     // ***************************************************
 
-    // TODO: This is currently O(kn) but can be modified to be O(n).
+    // TODO: This step requires O(kn) memory usage due to saving the entire
+    //       T matrix. However, it can be modified so that the memory usage is O(n).
+    //       D and T would not need to be retained in full (D already doesn't need
+    //       to be fully retained, although it currently is).
     //       Details are in section 3 of (Grønlund et al., 2017).
 
     ulong t = n;
