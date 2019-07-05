@@ -26,12 +26,6 @@ def cluster(array: Sequence[float], k: int) -> Tuple[List, List]:
     assert n > 0, f'Invalid len(array): {n}'
     k = min(k, n)
 
-    # The algorithm requires a sorted array
-    # TODO: Move sorting/de-sorting to C++ code for speed
-    sort_idxs = sorted(range(len(array)), key=lambda x: array[x])
-    undo_sort_lookup = {y: x for x, y in enumerate(sort_idxs)}
-    array = [array[idx] for idx in sort_idxs]
-
     c_array = (ctypes.c_double * n)(*array)
     c_n = ctypes.c_ulong(n)
     c_k = ctypes.c_ulong(k)
@@ -40,9 +34,8 @@ def cluster(array: Sequence[float], k: int) -> Tuple[List, List]:
 
     _DLL.cluster(c_array, c_n, c_k, c_clusters, c_centroids)
     clusters = list(c_clusters)
-    # Order clusters according to the array ordering before sorting
-    clusters = [clusters[undo_sort_lookup[x]] for x in range(len(array))]
     centroids = list(c_centroids)
 
     output = Clustered(clusters=clusters, centroids=centroids)
+
     return output

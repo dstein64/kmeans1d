@@ -1,5 +1,6 @@
 #include <Python.h>
 
+#include <algorithm>
 #include <cstdint>
 #include <functional>
 #include <numeric>
@@ -103,11 +104,11 @@ class CostCalculator {
     vector<double> cumsum2;
 
   public:
-    CostCalculator(double* array, ulong n) {
+    CostCalculator(const vector<double>& v, ulong n) {
         cumsum.push_back(0.0);
         cumsum2.push_back(0.0);
         for (ulong i = 0; i < n; ++i) {
-            double x = array[i];
+            double x = v[i];
             cumsum.push_back(x + cumsum[i]);
             cumsum2.push_back(x * x + cumsum2[i]);
         }
@@ -153,11 +154,34 @@ extern "C" {
 __declspec(dllexport)
 #endif
 void cluster(
-        double* sorted_array,
+        double* array,
         ulong n,
         ulong k,
         ulong* clusters,
         double* centroids) {
+    // ***************************************************
+    // * Sort input array and save info for de-sorting
+    // ***************************************************
+
+    vector<ulong> sort_idxs(n);
+    iota(sort_idxs.begin(), sort_idxs.end(), 0);
+    sort(
+        sort_idxs.begin(),
+        sort_idxs.end(),
+        [&array](ulong a, ulong b) {return array[a] < array[b];});
+    unordered_map<ulong, ulong> undo_sort_lookup;
+    vector<double> sorted_array(n);
+    for (ulong i = 0; i < n; ++i) {
+        sorted_array[i] = array[sort_idxs[i]];
+        undo_sort_lookup[sort_idxs[i]] = i;
+    }
+
+    // ***************************************************
+    // * Set D and T using dynamic programming algorithm
+    // ***************************************************
+
+    // Algorithm as presented in section 2.2 of (Gronlund et al., 2017).
+
     CostCalculator cost_calculator(sorted_array, n);
     Matrix<double> D(k, n);
     Matrix<ulong> T(k, n);
@@ -191,6 +215,8 @@ void cluster(
     //       to be fully retained, although it currently is).
     //       Details are in section 3 of (Grønlund et al., 2017).
 
+    vector<double> sorted_clusters(n);
+
     ulong t = n;
     ulong k_ = k - 1;
     ulong n_ = n - 1;
@@ -202,13 +228,22 @@ void cluster(
         t = T.get(k_, n_);
         double centroid = 0.0;
         for (ulong i = t; i < t_; ++i) {
-            clusters[i] = k_;
+            sorted_clusters[i] = k_;
             centroid += (sorted_array[i] - centroid) / (i - t + 1);
         }
         centroids[k_] = centroid;
         k_ -= 1;
         n_ = t - 1;
     } while (t > 0);
+
+    // ***************************************************
+    // * Order cluster assignments to match de-sorted
+    // * ordering
+    // ***************************************************
+
+    for (ulong i = 0; i < n; ++i) {
+        clusters[i] = sorted_clusters[undo_sort_lookup[i]];
+    }
 }
 } // extern "C"
 

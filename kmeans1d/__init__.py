@@ -1,1 +1,1 @@
-from kmeans1d.core import cluster, __version__
+from kmeans1d.core import cluster, Clustered, __version__
