@@ -104,11 +104,11 @@ class CostCalculator {
     vector<double> cumsum2;
 
   public:
-    CostCalculator(const vector<double>& v, ulong n) {
+    CostCalculator(const vector<double>& vec, ulong n) {
         cumsum.push_back(0.0);
         cumsum2.push_back(0.0);
         for (ulong i = 0; i < n; ++i) {
-            double x = v[i];
+            double x = vec[i];
             cumsum.push_back(x + cumsum[i]);
             cumsum2.push_back(x * x + cumsum2[i]);
         }
