@@ -169,7 +169,7 @@ void cluster(
         sort_idxs.begin(),
         sort_idxs.end(),
         [&array](ulong a, ulong b) {return array[a] < array[b];});
-    unordered_map<ulong, ulong> undo_sort_lookup;
+    vector<ulong> undo_sort_lookup(n);
     vector<double> sorted_array(n);
     for (ulong i = 0; i < n; ++i) {
         sorted_array[i] = array[sort_idxs[i]];
