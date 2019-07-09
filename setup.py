@@ -1,7 +1,8 @@
 import os
 from setuptools import Extension, setup
 
-extension = Extension('kmeans1d._core', ["kmeans1d/_core.cpp"])
+extension = Extension(
+    'kmeans1d._core', ["kmeans1d/_core.cpp"], extra_compile_args=['-std=c++11'])
 
 version_txt = os.path.join(os.path.dirname(__file__), 'kmeans1d', 'version.txt')
 with open(version_txt, 'r') as f:
