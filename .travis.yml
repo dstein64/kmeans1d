@@ -2,6 +2,6 @@ language: python
 python:
   - "3.6"
 install:
-  - pip install .
+  - pip install -e .
 script:
   - python -m unittest discover tests -v
