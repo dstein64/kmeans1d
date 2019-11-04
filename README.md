@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/dstein64/kmeans1d.svg?branch=master)](https://travis-ci.org/dstein64/kmeans1d)
+
 kmeans1d
 ========
 
@@ -38,7 +40,16 @@ clusters, centroids = kmeans1d.cluster(x, k)
 
 print(clusters)   # [1, 1, 1, 0, 3, 3, 3, 2, 2, 2]
 print(centroids)  # [-50.0, 4.1, 94.0, 200.5]
+```
 
+Tests
+-----
+
+Tests are in [tests/](https://github.com/dstein64/kmeans1d/blob/master/tests).
+
+```sh
+# Run tests
+$ python3 -m unittest discover tests -v
 ```
 
 License
