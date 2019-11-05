@@ -1,4 +1,5 @@
 import unittest
+
 from kmeans1d import cluster
 
 class TestKmeans1D(unittest.TestCase):
