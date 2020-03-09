@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/dstein64/kmeans1d.svg?branch=master)](https://travis-ci.org/dstein64/kmeans1d)
+[![Build Status](https://github.com/dstein64/kmeans1d/workflows/build/badge.svg)](https://github.com/dstein64/kmeans1d/actions)
 
 kmeans1d
 ========

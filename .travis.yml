@@ -1,8 +1,0 @@
-language: python
-python:
-  - "3.6"
-install:
-  - python setup.py build_ext --inplace
-  - pip install .
-script:
-  - python -m unittest discover tests -v
