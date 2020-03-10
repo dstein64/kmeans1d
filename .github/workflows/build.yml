@@ -16,7 +16,11 @@ jobs:
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
-        compiler: [{cc: gcc, cxx: g++}, (cc: clang, cxx: clang++}]
+        compiler:
+          - cc: clang
+            cxx: clang++
+          - cc: gcc
+            cxx: g++
 
     steps:
     - uses: actions/checkout@v2
