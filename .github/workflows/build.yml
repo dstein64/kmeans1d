@@ -33,13 +33,13 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Build
-      if: matrix.config.cc
+      if: matrix.config.os == 'ubuntu-latest'
       env:
         CC: ${{ matrix.config.cc }}
         CXX: ${{ matrix.config.cxx }}
       run: python setup.py build_ext --inplace
     - name: Build
-      if: !matrix.config.cc
+      if: matrix.config.os != 'ubuntu-latest'
       run: python setup.py build_ext --inplace
     - name: Install
       run: |
