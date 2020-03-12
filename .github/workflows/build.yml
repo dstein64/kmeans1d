@@ -33,10 +33,13 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Build
+      if: matrix.config.cc
       env:
-        if: matrix.config.cc
-          CC: ${{ matrix.config.cc }}
-          CXX: ${{ matrix.config.cxx }}
+        CC: ${{ matrix.config.cc }}
+        CXX: ${{ matrix.config.cxx }}
+      run: python setup.py build_ext --inplace
+    - name: Build
+      if: !matrix.config.cc
       run: python setup.py build_ext --inplace
     - name: Install
       run: |
