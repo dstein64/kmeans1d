@@ -12,18 +12,19 @@ on:
 jobs:
   build:
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
         python-version: [3.6, 3.7, 3.8]
-        include:
+        config:
           - os: ubuntu-latest
             cc: clang
             cxx: clang++
           - os: ubuntu-latest
             cc: gcc
             cxx: g++
+          - os: windows-latest
+          - os: macos-latest
 
     steps:
     - uses: actions/checkout@v2
