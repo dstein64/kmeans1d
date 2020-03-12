@@ -35,8 +35,8 @@ jobs:
     - name: Build
       env:
         if: matrix.config.cc
-        CC: ${{ matrix.config.cc }}
-        CXX: ${{ matrix.config.cxx }}
+          CC: ${{ matrix.config.cc }}
+          CXX: ${{ matrix.config.cxx }}
       run: python setup.py build_ext --inplace
     - name: Install
       run: |
