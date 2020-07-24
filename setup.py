@@ -1,8 +1,15 @@
 import os
 from setuptools import Extension, setup
 
+# '-std=c++11' was added to `extra_compile_args` so the code can compile with clang++.
+# '-stdlib=libc++' was added to `extra_compile_args` and `extra_link_args` so the code
+# can compile on macOS with Anaconda.
 extension = Extension(
-    'kmeans1d._core', ["kmeans1d/_core.cpp"], extra_compile_args=['-std=c++11'])
+    'kmeans1d._core',
+    ['kmeans1d/_core.cpp'],
+    extra_compile_args=['-std=c++11', '-stdlib=libc++'],
+    extra_link_args=['-stdlib=libc++']
+)
 
 version_txt = os.path.join(os.path.dirname(__file__), 'kmeans1d', 'version.txt')
 with open(version_txt, 'r') as f:
