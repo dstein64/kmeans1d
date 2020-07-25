@@ -16,6 +16,7 @@ class BuildExt(build_ext):
         try:
             build_ext.build_extensions(self)
         except setuptools.distutils.errors.CompileError:
+            # Workaround Issue #2.
             # '-stdlib=libc++' is added to `extra_compile_args` and `extra_link_args`
             # so the code can compile on macOS with Anaconda.
             for extension in self.extensions:
