@@ -1,26 +1,27 @@
 import os
+import setuptools
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
 
 
 class BuildExt(build_ext):
-    """A custom build extension for adding -std and -stdlib arguments for clang++."""
-    def is_using_clang(self):
-        cxx = self.compiler.compiler_cxx[0]
-        if 'clang' in cxx:
-            return True
-        # TODO: check if 'cxx' points to clang++.
-        return False
+    """A custom build extension for adding -stdlib arguments for clang++."""
 
     def build_extensions(self):
-        if self.is_using_clang():
+        # '-std=c++11' is added to `extra_compile_args` so the code can compile
+        # with clang++. This works across compilers (ignored by MSVC).
+        for extension in self.extensions:
+            extension.extra_compile_args.append('-std=c++11')
+
+        try:
+            build_ext.build_extensions(self)
+        except setuptools.distutils.errors.CompileError:
+            # '-stdlib=libc++' is added to `extra_compile_args` and `extra_link_args`
+            # so the code can compile on macOS with Anaconda.
             for extension in self.extensions:
-                # '-std=c++11' is added to `extra_compile_args` so the code can compile
-                # with clang++. '-stdlib=libc++' is added to `extra_compile_args` and
-                # `extra_link_args` so the code can compile on macOS with Anaconda.
-                extension.extra_compile_args.extend(('-std=c++11', '-stdlib=libc++'))
+                extension.extra_compile_args.append('-stdlib=libc++')
                 extension.extra_link_args.append('-stdlib=libc++')
-        build_ext.build_extensions(self)
+            build_ext.build_extensions(self)
 
 
 extension = Extension('kmeans1d._core', ['kmeans1d/_core.cpp'])
