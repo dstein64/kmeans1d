@@ -147,10 +147,14 @@ class Matrix {
 };
 
 extern "C" {
-// "__declspec(dllexport)" causes the function to be exported when compiling with
-// Visual Studio on Windows. Otherwise, the function is not exported and the code
-// raises "AttributeError: function 'cluster' not found".
-#if defined (_MSC_VER)
+// "__declspec(dllexport)" causes the function to be exported when compiling on Windows.
+// Otherwise, the function is not exported and the code raises
+//   "AttributeError: function 'cluster' not found".
+// Exporting is a Windows platform requirement, not just a Visual Studio requirement
+// (https://stackoverflow.com/a/22288874/1509433). The _WIN32 macro covers the Visual
+// Studio compiler (MSVC) and MinGW. The __CYGWIN__ macro covers gcc and clang under
+// Cygwin.
+#if defined(_WIN32) || defined(__CYGWIN__)
 __declspec(dllexport)
 #endif
 void cluster(
