@@ -55,6 +55,15 @@ Tests are in [tests/](https://github.com/dstein64/kmeans1d/blob/master/tests).
 $ python3 -m unittest discover tests -v
 ```
 
+Development
+-----------
+
+The underlying C++ code can be built in-place, outside the context of `pip`.
+
+```
+$ python3 setup.py build_ext --inplace
+```
+
 License
 -------
 
