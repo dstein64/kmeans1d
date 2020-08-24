@@ -18,6 +18,9 @@ Requirements
 
 *kmeans1d* supports Python 3.x.
 
+A C++ compiler is required. Compilation of the underlying C++ code is performed automatically during
+installation. `gcc`, `clang`, and `MSVC` have been tested.
+
 Installation
 ------------
 
