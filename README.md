@@ -7,9 +7,9 @@ A Python library with an implementation of *k*-means clustering on 1D data, base
 in (Xiaolin 1991), as presented in section 2.2 of (Gronlund et al., 2017).
 
 Globally optimal *k*-means clustering is NP-hard for multi-dimensional data. Lloyd's algorithm is a
-popular approach for finding a locally optimal solution. For 1-dimensional data, there are polynomial time
-algorithms. The algorithm implemented here is a *O(kn + n log n)* dynamic programming algorithm for finding
-the globally optimal *k* clusters for *n* 1D data points.
+popular approach for finding a locally optimal solution. For 1-dimensional data, there are polynomial
+time algorithms. The algorithm implemented here is an *O(kn + n log n)* dynamic programming algorithm
+for finding the globally optimal *k* clusters for *n* 1D data points.
 
 The code is written in C++, and wrapped with Python.
 
