@@ -3,15 +3,28 @@ on:
   workflow_dispatch
 
 jobs:
-  say_hello:
+  wheels:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+        python-version: [3.5, 3.6, 3.7, 3.8]
+
     steps:
-    - run: |
-        echo "Hello ${{ github.event.inputs.name }}!"
-        echo "- in ${{ github.event.inputs.home }}!"
-        echo hello > hello_world
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Dependencies
+      run: python -m pip install --upgrade pip wheel
+
+    - name: Build
+      run: python setup.py bdist_wheel
+
     - name: Upload Wheels
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: example
-        path: ./hello_world
+        path: ./dist
