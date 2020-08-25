@@ -23,12 +23,7 @@ jobs:
         python-version: [3.6, 3.7, 3.8]
 
     steps:
-    - name: Clone (latest)
-      if: github.event.inputs.git-ref == ''
-      uses: actions/checkout@v2
-
-    - name: Clone (git ref)
-      if: github.event.inputs.git-ref != ''
+    - name: Clone
       uses: actions/checkout@v2
       with:
         ref: ${{ github.event.inputs.git-ref }}
