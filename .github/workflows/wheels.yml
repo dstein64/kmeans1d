@@ -3,9 +3,8 @@ on:
   workflow_dispatch:
     inputs:
       git-ref:
-        description: Git ref (e.g., v0.3.0, cd9b052)
-        default: HEAD
-        required: true
+        description: Optional git ref (branch, tag, or SHA)
+        required: false
 
 jobs:
   wheels:
