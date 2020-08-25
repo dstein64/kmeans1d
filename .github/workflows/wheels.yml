@@ -1,6 +1,11 @@
 name: wheels
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      git-ref:
+        description: Git ref (e.g., v0.3.0, cd9b052)
+        default: HEAD
+        required: true
 
 jobs:
   wheels:
@@ -19,11 +24,21 @@ jobs:
         python-version: [3.6, 3.7, 3.8]
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Clone (latest)
+      if: github.event.inputs.git-ref == ''
+      uses: actions/checkout@v2
+
+    - name: Clone (git ref)
+      if: github.event.inputs.git-ref != ''
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.git-ref }}
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Dependencies
       run: python -m pip install --upgrade pip wheel
 
