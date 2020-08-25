@@ -27,9 +27,11 @@ jobs:
       if: ${{ startsWith(matrix.os, 'ubuntu-') }}
       run: |
         python -m pip install --upgrade auditwheel
-        sudo apt install patchelf
         auditwheel show dist/*.whl
-        auditwheel repair dist/*.whl
+        # Use manylinux2014, as you can't use an older ABI because of the presence of too-recent
+        # versioned symbols. To target manylinux1 and/or manylinux2010, docker images are provided
+        # by PyPA.
+        auditwheel repair --plat manylinux2014_x86_64 dist/*.whl
         rm -r dist
         mv wheelhouse dist
 
