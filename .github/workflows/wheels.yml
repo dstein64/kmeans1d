@@ -17,3 +17,9 @@ jobs:
     - run: |
         echo "Hello ${{ github.event.inputs.name }}!"
         echo "- in ${{ github.event.inputs.home }}!"
+        echo hello > hello_world
+    - name: Upload Wheels
+      uses: actions/upload-artifact@v1
+      with:
+        name: example
+        path: ./hello_world
