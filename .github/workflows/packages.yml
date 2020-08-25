@@ -1,4 +1,4 @@
-name: wheels
+name: packages
 on:
   workflow_dispatch:
     inputs:
@@ -8,6 +8,43 @@ on:
         required: false
 
 jobs:
+  sdist:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: Clone
+      uses: actions/checkout@v2
+      with:
+        # When the ref is empty, HEAD will be checked out.
+        ref: ${{ github.event.inputs.git-ref }}
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Dependencies
+      run: python -m pip install --upgrade pip
+
+    - name: Build
+      run: python setup.py sdist
+
+    - name: Test
+      run: |
+        pip install --verbose --no-cache-dir --no-binary :all: --find-links dist/ --no-index kmeans1d
+        # Change to tests directory. This will result in the installed module being imported from
+        # site-packages, as opposed to the kmeans1d directory in the source tree being imported.
+        cd tests
+        python -m unittest discover . -v
+
+    - name: Upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: packages
+        path: ./dist
+
   wheels:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -63,5 +100,5 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v2
       with:
-        name: wheels
+        name: packages
         path: ./dist
