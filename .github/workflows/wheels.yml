@@ -26,9 +26,10 @@ jobs:
     - name: Test
       run: |
         pip install --verbose --no-cache-dir --only-binary :all: --find-links dist/ --no-index kmeans1d
-        python -m unittest discover tests -v
+        cd tests
+        python -m unittest discover . -v
 
-    - name: Upload Wheels
+    - name: Upload
       uses: actions/upload-artifact@v2
       with:
         name: wheels
