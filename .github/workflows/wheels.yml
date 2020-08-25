@@ -8,6 +8,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Use the oldest version of Ubuntu that supports the versions of Python
+        # you're targeting.
+        #  > "Building manylinux-compatible wheels is not trivial; as a general rule,
+        #    binaries built on one Linux distro will only work on other Linux distros
+        #    that are the same age or newer. Therefore, if we want to make binaries that
+        #    run on most Linux distros, we have to use a very old distro -- CentOS 6."
+        #  - https://github.com/pypa/manylinux
         os: [macos-latest, windows-latest, ubuntu-16.04]
         python-version: [3.6, 3.7, 3.8]
 
