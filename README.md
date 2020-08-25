@@ -18,9 +18,6 @@ Requirements
 
 *kmeans1d* supports Python 3.x.
 
-A C++ compiler is required. Compilation of the underlying C++ code is performed automatically during
-installation. `gcc`, `clang`, and `MSVC` have been tested.
-
 Installation
 ------------
 
@@ -58,11 +55,15 @@ $ python3 -m unittest discover tests -v
 Development
 -----------
 
-The underlying C++ code can be built in-place, outside the context of `pip`.
+The underlying C++ code can be built in-place, outside the context of `pip`. `gcc`, `clang`, and `MSVC`
+have been tested.
 
 ```
 $ python3 setup.py build_ext --inplace
 ```
+
+The [wheels.yml](https://github.com/dstein64/.github/workflows/wheels.yml) GitHub action can be manually
+triggered to build wheels.
 
 License
 -------
