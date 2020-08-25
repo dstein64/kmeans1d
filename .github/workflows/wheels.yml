@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       git-ref:
-        description: Optional git ref (branch, tag, or SHA)
+        description: Optional git ref (branch, tag, or full SHA)
         required: false
 
 jobs:
