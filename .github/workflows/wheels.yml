@@ -2,6 +2,7 @@ name: wheels
 on:
   workflow_dispatch:
     inputs:
+      # When git-ref is empty, HEAD will be checked out.
       git-ref:
         description: Optional git ref (branch, tag, or full SHA)
         required: false
@@ -26,6 +27,7 @@ jobs:
     - name: Clone
       uses: actions/checkout@v2
       with:
+        # When the ref is empty, HEAD will be checked out.
         ref: ${{ github.event.inputs.git-ref }}
 
     - name: Set up Python ${{ matrix.python-version }}
