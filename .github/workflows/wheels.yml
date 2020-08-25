@@ -4,7 +4,7 @@ on:
 
 jobs:
   wheels:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -26,5 +26,5 @@ jobs:
     - name: Upload Wheels
       uses: actions/upload-artifact@v2
       with:
-        name: example
+        name: wheels
         path: ./dist
