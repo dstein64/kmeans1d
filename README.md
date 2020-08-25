@@ -62,8 +62,9 @@ have been tested.
 $ python3 setup.py build_ext --inplace
 ```
 
-The [wheels.yml](https://github.com/dstein64/kmeans1d/blob/master/.github/workflows/wheels.yml) GitHub
-action can be manually triggered (`Actions` > `wheels` > `Run workflow`) to build wheels.
+The [packages.yml](https://github.com/dstein64/kmeans1d/blob/master/.github/workflows/packages.yml)
+GitHub action can be manually triggered (`Actions` > `packages` > `Run workflow`) to build wheels
+and a source distribution.
 
 License
 -------
