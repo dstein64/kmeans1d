@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@v2
@@ -26,6 +26,8 @@ jobs:
     - name: Test
       run: |
         pip install --verbose --no-cache-dir --only-binary :all: --find-links dist/ --no-index kmeans1d
+        # Change to tests directory. This will result in the module being imported from site-packages,
+        # as opposed to the kmeans1d directory being imported.
         cd tests
         python -m unittest discover . -v
 
