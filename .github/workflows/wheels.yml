@@ -1,14 +1,6 @@
-name: Manually triggered workflow
+name: wheels
 on:
-  workflow_dispatch:
-    inputs:
-      name:
-        description: 'Person to greet'
-        required: true
-        default: 'Mona the Octocat'
-      home:
-        description: 'location'
-        required: false
+  workflow_dispatch
 
 jobs:
   say_hello:
