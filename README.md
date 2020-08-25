@@ -63,7 +63,7 @@ $ python3 setup.py build_ext --inplace
 ```
 
 The [wheels.yml](https://github.com/dstein64/.github/workflows/wheels.yml) GitHub action can be manually
-triggered to build wheels.
+triggered (`Actions` > `wheels` > `Run workflow`) to build wheels.
 
 License
 -------
