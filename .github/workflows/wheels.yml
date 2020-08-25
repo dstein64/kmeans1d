@@ -27,7 +27,7 @@ jobs:
       if: ${{ startsWith(matrix.os, 'ubuntu-') }}
       run: |
         python -m pip install --upgrade auditwheel
-        apt install patchelf
+        sudo apt install patchelf
         auditwheel show dist/*.whl
         auditwheel repair dist/*.whl
         rm -r dist
