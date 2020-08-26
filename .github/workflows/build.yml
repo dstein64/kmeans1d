@@ -46,7 +46,7 @@ jobs:
     - name: Typing
       run: |
         python -m pip install mypy
-        python -m kmeans1d
+        python -m mypy kmeans1d
 
     - name: Build
       if: matrix.config.os == 'ubuntu-latest'
