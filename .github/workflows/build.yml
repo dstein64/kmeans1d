@@ -48,14 +48,14 @@ jobs:
         python -m pip install mypy
         python -m mypy kmeans1d
 
-    - name: Build
+    - name: Build (ubuntu)
       if: matrix.config.os == 'ubuntu-latest'
       env:
         CC: ${{ matrix.config.cc }}
         CXX: ${{ matrix.config.cxx }}
       run: python setup.py build_ext --inplace
 
-    - name: Build
+    - name: Build (other)
       if: matrix.config.os != 'ubuntu-latest'
       run: python setup.py build_ext --inplace
 
