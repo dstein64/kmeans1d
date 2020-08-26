@@ -1,9 +1,9 @@
 from collections import namedtuple
 import ctypes
 import os
-from typing import List, Sequence, Tuple
+from typing import Sequence
 
-import kmeans1d._core
+import kmeans1d._core  # type: ignore
 
 
 Clustered = namedtuple('Clustered', 'clusters centroids')
@@ -15,7 +15,7 @@ with open(version_txt, 'r') as f:
     __version__ = f.read().strip()
 
 
-def cluster(array: Sequence[float], k: int) -> Tuple[List, List]:
+def cluster(array: Sequence[float], k: int) -> Clustered:
     """
     :param array: A sequence of floats
     :param k: Number of clusters (int)

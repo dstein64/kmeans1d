@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
@@ -28,24 +27,14 @@ jobs:
           - os: macos-latest
 
     steps:
+    - name: Checkout
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Build
-      if: matrix.config.os == 'ubuntu-latest'
-      env:
-        CC: ${{ matrix.config.cc }}
-        CXX: ${{ matrix.config.cxx }}
-      run: python setup.py build_ext --inplace
-    - name: Build
-      if: matrix.config.os != 'ubuntu-latest'
-      run: python setup.py build_ext --inplace
-    - name: Install
-      run: |
-        python -m pip install --upgrade pip
-        pip install .
+
     - name: Lint
       run: |
         pip install flake8
@@ -53,5 +42,27 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Typing
+      run: |
+        python -m pip install mypy
+        python -m kmeans1d
+
+    - name: Build
+      if: matrix.config.os == 'ubuntu-latest'
+      env:
+        CC: ${{ matrix.config.cc }}
+        CXX: ${{ matrix.config.cxx }}
+      run: python setup.py build_ext --inplace
+
+    - name: Build
+      if: matrix.config.os != 'ubuntu-latest'
+      run: python setup.py build_ext --inplace
+
+    - name: Install
+      run: |
+        python -m pip install --upgrade pip
+        pip install .
+
     - name: Test
       run: python -m unittest discover tests -v

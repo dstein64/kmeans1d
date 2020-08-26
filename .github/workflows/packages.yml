@@ -33,7 +33,7 @@ jobs:
 
     - name: Test
       run: |
-        pip install --verbose --no-cache-dir --no-binary :all: --find-links dist/ --no-index kmeans1d
+        python -m pip install --verbose --no-cache-dir --no-binary :all: --find-links dist/ --no-index kmeans1d
         # Change to tests directory. This will result in the installed module being imported from
         # site-packages, as opposed to the kmeans1d directory in the source tree being imported.
         cd tests
@@ -82,16 +82,16 @@ jobs:
       if: ${{ startsWith(matrix.os, 'ubuntu-') }}
       run: |
         python -m pip install --upgrade auditwheel
-        auditwheel show dist/*.whl
+        python -m auditwheel show dist/*.whl
         # Use manylinux2014, as you can't use an older ABI because of the presence of too-recent
         # versioned symbols. To target manylinux1 and/or manylinux2010, PyPA provides docker images.
-        auditwheel repair --plat manylinux2014_x86_64 dist/*.whl
+        python -m auditwheel repair --plat manylinux2014_x86_64 dist/*.whl
         rm -r dist
         mv wheelhouse dist
 
     - name: Test
       run: |
-        pip install --verbose --no-cache-dir --only-binary :all: --find-links dist/ --no-index kmeans1d
+        python -m pip install --verbose --no-cache-dir --only-binary :all: --find-links dist/ --no-index kmeans1d
         # Change to tests directory. This will result in the installed module being imported from
         # site-packages, as opposed to the kmeans1d directory in the source tree being imported.
         cd tests
