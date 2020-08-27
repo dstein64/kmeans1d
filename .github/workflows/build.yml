@@ -47,16 +47,18 @@ jobs:
         python -m pip install mypy
         python -m mypy kmeans1d
 
-    - name: Build (ubuntu)
+    - name: Install (ubuntu)
       if: matrix.config.os == 'ubuntu-latest'
       env:
         CC: ${{ matrix.config.cc }}
         CXX: ${{ matrix.config.cxx }}
-      run: python setup.py build_ext --inplace
+      run: pip install .
 
-    - name: Build (other)
+    - name: Install (other)
       if: matrix.config.os != 'ubuntu-latest'
-      run: python setup.py build_ext --inplace
+      run: pip install .
 
     - name: Test
-      run: python -m unittest discover tests -v
+      run: |
+        cd tests  # so package is imported from site-packages instead of working directory
+        python -m unittest discover . -v
