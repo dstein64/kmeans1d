@@ -52,11 +52,11 @@ jobs:
       env:
         CC: ${{ matrix.config.cc }}
         CXX: ${{ matrix.config.cxx }}
-      run: pip install .
+      run: pip install --verbose .
 
     - name: Install (other)
       if: matrix.config.os != 'ubuntu-latest'
-      run: pip install .
+      run: pip install --verbose .
 
     - name: Test
       run: |
