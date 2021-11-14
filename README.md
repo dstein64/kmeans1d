@@ -4,7 +4,7 @@ kmeans1d
 ========
 
 A Python library with an implementation of *k*-means clustering on 1D data, based on the algorithm
-in (Xiaolin 1991), as presented in section 2.2 of (Gronlund et al., 2017).
+from Xiaolin (1991), as presented by Gronlund et al. (2017, Section 2.2).
 
 Globally optimal *k*-means clustering is NP-hard for multi-dimensional data. Lloyd's algorithm is a
 popular approach for finding a locally optimal solution. For 1-dimensional data, there are polynomial
