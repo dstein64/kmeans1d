@@ -55,8 +55,9 @@ $ python3 -m unittest discover tests -v
 Development
 -----------
 
-The underlying C++ code can be built in-place, outside the context of `pip`. `gcc`, `clang`, and `MSVC`
-have been tested.
+The underlying C++ code can be built in-place, outside the context of `pip`. This requires Python
+development tools for building Python modules (e.g., the `python3-dev` package on Ubuntu). `gcc`,
+`clang`, and `MSVC` have been tested.
 
 ```
 $ python3 setup.py build_ext --inplace
