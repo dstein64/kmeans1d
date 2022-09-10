@@ -54,7 +54,7 @@ jobs:
         #    want to make binaries that run on most Linux distros, we have to
         #    use a very old distro -- CentOS 6."
         #  - https://github.com/pypa/manylinux
-        os: [macos-latest, windows-latest, ubuntu-18.04]
+        os: [macos-latest, windows-latest, ubuntu-20.04]
         python-version: [3.6, 3.7, 3.8, 3.9, '3.10']
 
     steps:
