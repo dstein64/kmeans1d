@@ -34,16 +34,21 @@ jobs:
             cxx: g++
           - os: windows-latest
           - os: macos-latest
+        exclude:
+          # Python 3.6 is not supported on GitHub-hosted Ubuntu runners as of Ubuntu 22.04.
+          # https://github.com/actions/setup-python/issues/544#issuecomment-1332535877
+          - config.os: ubuntu-latest
+            python-version: '3.6'
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         # When the ref is empty, HEAD will be checked out.
         ref: ${{ github.event.inputs.git-ref }}
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
