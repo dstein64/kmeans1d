@@ -37,8 +37,7 @@ jobs:
         exclude:
           # Python 3.6 is not supported on GitHub-hosted Ubuntu runners as of Ubuntu 22.04.
           # https://github.com/actions/setup-python/issues/544#issuecomment-1332535877
-          - os: ubuntu-latest
-            python-version: '3.6'
+          - {config: {os: ubuntu-latest}, python-version: '3.6'}
 
     steps:
     - name: Checkout
