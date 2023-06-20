@@ -78,7 +78,12 @@ jobs:
     - name: manylinux
       if: ${{ startsWith(matrix.os, 'ubuntu-') }}
       run: |
-        python -m pip install --upgrade auditwheel
+        # Newer versions of auditwheel require a version of patchelf that's
+        # not available on Ubuntu 20.04.
+        #   https://github.com/pypa/auditwheel/blob/main/CHANGELOG.md
+        #   https://github.com/pypa/auditwheel/pull/403
+        #   https://github.com/pypa/auditwheel/issues/401
+        python -m pip install --upgrade auditwheel==5.1.2
         python -m auditwheel show dist/*.whl
         # Use manylinux2014, as you can't use an older ABI because of the
         # presence of too-recent versioned symbols. To target manylinux1 and/or
