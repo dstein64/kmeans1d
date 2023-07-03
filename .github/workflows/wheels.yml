@@ -32,4 +32,6 @@ jobs:
 
     - name: Test
       run: |
-        pip install --only-binary :all: kmeans1d
+        VERSIONS="$(pip index --index-url https://test.pypi.org/simple/ versions kmeans1d)"
+        LATEST="$(echo ${VERSIONS} | awk '/kmeans1d/ {print $2}' | sed 's/(\(.*\))/\1/')"
+        pip install --only-binary :all: "kmeans1d==${LATEST}"
