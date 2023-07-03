@@ -32,12 +32,11 @@ jobs:
 
     - name: Test (windows)
       if: matrix.os == 'windows-latest'
-      # WARN: The install below doesn't specify a kmeans1d version. If an
-      # earlier version of kmeans1d had wheels for the latest Python version,
-      # that earlier kmeans1d version would be installed without failure. That
-      # scenario is unlikely to occur.
       run: |
-        pip install --only-binary :all: kmeans1d
+        $VERSIONS = (pip index versions kmeans1d)
+        $LATEST_LINE = ($VERSIONS | Select-String -Pattern 'kmeans1d')
+        $LATEST = ($LATEST_LINE | ForEach-Object { $_ -replace 'kmeans1d \((.*)\)', '$1' })
+        pip install --only-binary :all: "kmeans1d==$LATEST"
 
     - name: Test (other)
       if: matrix.os != 'windows-latest'
