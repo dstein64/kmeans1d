@@ -34,6 +34,5 @@ jobs:
       shell: pwsh
       run: |
         $VERSIONS = pip index versions kmeans1d
-        $LATEST_LINE = $VERSIONS | Select-String -Pattern 'kmeans1d'
-        $LATEST = $LATEST_LINE | ForEach-Object { $_ -replace 'kmeans1d \((.*)\)', '$1' }
+        $LATEST = $VERSIONS[0] | ForEach-Object { $_ -replace 'kmeans1d \((.*)\)', '$1' }
         pip install --only-binary :all: "kmeans1d==$LATEST"
