@@ -37,6 +37,4 @@ jobs:
         $VERSIONS = pip index versions kmeans1d
         $LATEST = $VERSIONS[0] | ForEach-Object { $_ -replace 'kmeans1d \((.*)\)', '$1' }
         pip install --only-binary :all: "kmeans1d==$LATEST"
-        if ($LASTEXITCODE -ne 0) {
-            throw "error"
-        }
+        if ($LASTEXITCODE -ne 0) { throw "error" }
