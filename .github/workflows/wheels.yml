@@ -30,17 +30,10 @@ jobs:
     - name: Update pip
       run: pip install --upgrade pip
 
-    - name: Test (windows)
-      if: matrix.os == 'windows-latest'
+    - name: Test
+      shell: pwsh
       run: |
         $VERSIONS = (pip index versions kmeans1d)
         $LATEST_LINE = ($VERSIONS | Select-String -Pattern 'kmeans1d')
         $LATEST = ($LATEST_LINE | ForEach-Object { $_ -replace 'kmeans1d \((.*)\)', '$1' })
         pip install --only-binary :all: "kmeans1d==$LATEST"
-
-    - name: Test (other)
-      if: matrix.os != 'windows-latest'
-      run: |
-        VERSIONS="$(pip index versions kmeans1d)"
-        LATEST="$(echo ${VERSIONS} | awk '/kmeans1d/ {print $2}' | sed 's/(\(.*\))/\1/')"
-        pip install --only-binary :all: "kmeans1d==${LATEST}"
