@@ -55,7 +55,7 @@ jobs:
         #    use a very old distro -- CentOS 6."
         #  - https://github.com/pypa/manylinux
         os: [macos-latest, windows-latest, ubuntu-20.04]
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
 
     steps:
     - name: Clone
