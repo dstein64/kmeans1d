@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: Clone
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         # When the ref is empty, HEAD will be checked out.
         ref: ${{ github.event.inputs.git-ref }}
