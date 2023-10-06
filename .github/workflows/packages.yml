@@ -30,7 +30,7 @@ jobs:
         python-version: '3.x'
 
     - name: Dependencies
-      run: python -m pip install --upgrade pip
+      run: python -m pip install --upgrade pip setuptools
 
     - name: Build
       run: python setup.py sdist
