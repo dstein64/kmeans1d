@@ -257,12 +257,12 @@ static PyMethodDef module_methods[] = {
 
 static struct PyModuleDef _coremodule = {
     PyModuleDef_HEAD_INIT,
-    "kmeans1d._core",
+    "kmeans1d._core_kmeans",
     NULL,
     -1,
     module_methods,
 };
 
-PyMODINIT_FUNC PyInit__core(void) {
+PyMODINIT_FUNC PyInit__core_kmeans(void) {
     return PyModule_Create(&_coremodule);
 }

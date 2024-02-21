@@ -25,9 +25,9 @@ class BuildExt(build_ext):
             build_ext.build_extensions(self)
 
 
-extension = Extension('kmeans1d._core', ['kmeans1d/_core.cpp'])
+extension_kmeans = Extension('optimal1Dcluster._core_kmeans', ['optimal1Dcluster/_core_kmeans.cpp'])
 
-version_txt = os.path.join(os.path.dirname(__file__), 'kmeans1d', 'version.txt')
+version_txt = os.path.join(os.path.dirname(__file__), 'optimal1Dcluster', 'version.txt')
 with open(version_txt, 'r') as f:
     version = f.read().strip()
 
@@ -35,8 +35,8 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup(
-    author='Daniel Steinberg',
-    author_email='ds@dannyadam.com',
+    author='Jan Meißner',
+    author_email='philipp.meissner@rwth-aachen.de',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -52,16 +52,16 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     cmdclass={'build_ext': BuildExt},
-    description='A Python package for optimal 1D k-means clustering',
-    ext_modules=[extension],
-    keywords=['k-means', 'machine learning', 'optimization'],
+    description='A Python package for optimal 1D clustering',
+    ext_modules=[extension_kmeans],
+    keywords=['k-means', 'k-median', 'machine learning', 'optimization'],
     license='MIT',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    name='kmeans1d',
-    package_data={'kmeans1d': ['version.txt']},
-    packages=['kmeans1d'],
+    name='optimal1Dcluster',
+    package_data={'optimal1Dcluster': ['version.txt']},
+    packages=['optimal1Dcluster'],
     python_requires='>=3.6',
-    url='https://github.com/dstein64/kmeans1d',
+    url='',
     version=version,
 )

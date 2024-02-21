@@ -3,19 +3,19 @@ import ctypes
 import os
 from typing import Sequence
 
-import kmeans1d._core  # type: ignore
+import optimal1Dcluster._core_kmeans  # type: ignore
 
 
 Clustered = namedtuple('Clustered', 'clusters centroids')
 
-_DLL = ctypes.cdll.LoadLibrary(kmeans1d._core.__file__)
+_DLL = ctypes.cdll.LoadLibrary(optimal1Dcluster._core_kmeans.__file__)
 
 version_txt = os.path.join(os.path.dirname(__file__), 'version.txt')
 with open(version_txt, 'r') as f:
     __version__ = f.read().strip()
 
 
-def cluster(array: Sequence[float], k: int) -> Clustered:
+def kmeans(array: Sequence[float], k: int) -> Clustered:
     """
     :param array: A sequence of floats
     :param k: Number of clusters (int)
