@@ -2,6 +2,7 @@
 
 optimal1dclustering
 ========
+Add *k*-medians and add a minimum cluster size parameter to https://github.com/dstein64/kmeans1d.
 
 A Python library with an implementation of *k*-means and *k*-medians clustering on 1D data, based on the algorithm
 from Xiaolin (1991), as presented by Gronlund et al. (2017, Section 2.2).
