@@ -1,6 +1,6 @@
 [![Build Status](https://github.com/jan-meissner/optimal1dclustering/workflows/build/badge.svg)](https://github.com/jan-meissner/optimal1dclustering/actions)
 
-optimal1dcluster
+optimal1dclustering
 ========
 
 A Python library with an implementation of *k*-means and *k*-medians clustering on 1D data, based on the algorithm

@@ -288,7 +288,7 @@ static PyMethodDef module_methods[] = {
 
 static struct PyModuleDef _coremodule = {
     PyModuleDef_HEAD_INIT,
-    "optimal1dcluster._core",
+    "optimal1dclustering._core",
     NULL,
     -1,
     module_methods,

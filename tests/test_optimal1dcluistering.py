@@ -1,6 +1,6 @@
 import unittest
 
-from optimal1dcluster import cluster
+from optimal1dclustering import cluster
 
 import numpy as np
 import math

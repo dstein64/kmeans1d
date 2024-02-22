@@ -34,7 +34,7 @@ jobs:
       shell: pwsh
       run: |
         $ErrorActionPreference = "Stop"
-        $VERSIONS = pip index versions optimal1dcluster
-        $LATEST = $VERSIONS[0] | ForEach-Object { $_ -replace 'optimal1dcluster \((.*)\)', '$1' }
-        pip install --only-binary :all: "optimal1dcluster==$LATEST"
+        $VERSIONS = pip index versions optimal1dclustering
+        $LATEST = $VERSIONS[0] | ForEach-Object { $_ -replace 'optimal1dclustering \((.*)\)', '$1' }
+        pip install --only-binary :all: "optimal1dclustering==$LATEST"
         if ($LASTEXITCODE -ne 0) { throw "error" }

@@ -3,12 +3,12 @@ import ctypes
 import os
 from typing import Sequence
 
-import optimal1dcluster._core  # type: ignore
+import optimal1dclustering._core  # type: ignore
 
 
 Clustered = namedtuple("Clustered", "clusters centroids")
 
-_DLL = ctypes.cdll.LoadLibrary(optimal1dcluster._core.__file__)
+_DLL = ctypes.cdll.LoadLibrary(optimal1dclustering._core.__file__)
 
 version_txt = os.path.join(os.path.dirname(__file__), "version.txt")
 with open(version_txt, "r") as f:

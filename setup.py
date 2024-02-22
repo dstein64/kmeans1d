@@ -25,9 +25,9 @@ class BuildExt(build_ext):
             build_ext.build_extensions(self)
 
 
-extension = Extension("optimal1dcluster._core", ["optimal1dcluster/_core.cpp"])
+extension = Extension("optimal1dclustering._core", ["optimal1dclustering/_core.cpp"])
 
-version_txt = os.path.join(os.path.dirname(__file__), "optimal1dcluster", "version.txt")
+version_txt = os.path.join(os.path.dirname(__file__), "optimal1dclustering", "version.txt")
 with open(version_txt, "r") as f:
     version = f.read().strip()
 
@@ -60,9 +60,9 @@ setup(
     license="MIT",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    name="optimal1dcluster",
-    package_data={"optimal1dcluster": ["version.txt"]},
-    packages=["optimal1dcluster"],
+    name="optimal1dclustering",
+    package_data={"optimal1dclustering": ["version.txt"]},
+    packages=["optimal1dclustering"],
     python_requires=">=3.6",
     url="",
     version=version,
