@@ -37,12 +37,14 @@ Example Usage
 import optimal1dclustering
 
 x = [4.0, 4.1, 4.2, -50, 200.2, 200.4, 200.9, 80, 100, 102]
-k = 4
+k = 4 # Number of clusters
+min_cluster_size = 2 # The minimum number of elements in each cluster
+mode = 2 # 2 for k-means; 1 for k-medians
 
-clusters, centroids = optimal1dclustering.cluster(x, k)
+clusters, centroids = optimal1dclustering.cluster(x, k, min_cluster_size = min_cluster_size, mode = mode)
 
-print(clusters)   # [1, 1, 1, 0, 3, 3, 3, 2, 2, 2]
-print(centroids)  # [-50.0, 4.1, 94.0, 200.5]
+print(clusters)   # [0, 1, 1, 0, 3, 3, 3, 2, 2, 2]
+print(centroids)  # [-23.0, 4.15, 94.0, 200.5]
 ```
 
 Tests
