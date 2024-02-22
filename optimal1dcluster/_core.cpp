@@ -6,8 +6,6 @@
 #include <numeric>
 #include <unordered_map>
 #include <vector>
-#include <limits>
-#include <stdexcept>
 
 using namespace std;
 
@@ -112,7 +110,7 @@ class CostCalculator {
     vector<double> cumsum2;
     CostCalculationMode mode;
     ulong min_cluster_size;
-    double inf = numeric_limits<double>::infinity();
+    double inf = 1.0 / 0.0;
 
   public:
     CostCalculator(const vector<double>& vec, ulong n, CostCalculationMode mode, ulong min_cluster_size)
@@ -141,7 +139,7 @@ class CostCalculator {
             ulong floor_m_i_j = static_cast<ulong>(floor(m_i_j));
             ulong ceil_m_i_j = static_cast<ulong>(ceil(m_i_j));
             if (!(i <= floor_m_i_j && floor_m_i_j <= ceil_m_i_j && ceil_m_i_j <= j)) {
-                throw std::runtime_error("Condition violated: i <= floor <= ceil <= j");
+                std::exit(EXIT_FAILURE);
             }
 
             double centroid = (x[floor_m_i_j] + x[ceil_m_i_j]) / 2.0;
