@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <vector>
 #include <limits>
+#include <stdexcept>
 
 using namespace std;
 
