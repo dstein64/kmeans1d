@@ -97,3 +97,21 @@ jobs:
       with:
         name: packages
         path: ./dist
+
+  upload-to-pypi:
+    needs: [sdist, wheels]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+
+    steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: packages
+        path: dist
+
+    - name: Upload to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        packages_dir: dist
