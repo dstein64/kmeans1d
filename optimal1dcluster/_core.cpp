@@ -6,6 +6,7 @@
 #include <numeric>
 #include <unordered_map>
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -110,7 +111,7 @@ class CostCalculator {
     vector<double> cumsum2;
     CostCalculationMode mode;
     ulong min_cluster_size;
-    double inf = 1.0 / 0.0;
+    double inf = INFINITY;
 
   public:
     CostCalculator(const vector<double>& vec, ulong n, CostCalculationMode mode, ulong min_cluster_size)
