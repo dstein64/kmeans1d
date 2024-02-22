@@ -1,12 +1,15 @@
-[![Build Status](https://github.com/dstein64/kmeans1d/workflows/build/badge.svg)](https://github.com/dstein64/kmeans1d/actions)
+[![Build Status](https://github.com/jan-meissner/optimal1dclustering/workflows/build/badge.svg)](https://github.com/jan-meissner/optimal1dclustering/actions)
 
-kmeans1d
+optimal1dcluster
 ========
 
-A Python library with an implementation of *k*-means clustering on 1D data, based on the algorithm
+A Python library with an implementation of *k*-means and *k*-medians clustering on 1D data, based on the algorithm
 from Xiaolin (1991), as presented by Gronlund et al. (2017, Section 2.2).
 
-Globally optimal *k*-means clustering is NP-hard for multi-dimensional data. Lloyd's algorithm is a
+The algorithm implemented in this library can also find the optimal clustering when clusters are required to have a 
+minimum cluster size. It still finds the optimal clustering as the cost function is still monge concave.
+
+Globally optimal clustering is NP-hard for multi-dimensional data. Lloyd's algorithm is a
 popular approach for finding a locally optimal solution. For 1-dimensional data, there are polynomial
 time algorithms. The algorithm implemented here is an *O(kn + n log n)* dynamic programming algorithm
 for finding the globally optimal *k* clusters for *n* 1D data points.
@@ -16,27 +19,27 @@ The code is written in C++, and wrapped with Python.
 Requirements
 ------------
 
-*kmeans1d* supports Python 3.x.
+*optimal1dclustering* supports Python 3.x.
 
 Installation
 ------------
 
-[kmeans1d](https://pypi.python.org/pypi/kmeans1d) is available on PyPI, the Python Package Index.
+[optimal1dclustering](https://pypi.python.org/pypi/optimal1dclustering) is available on PyPI, the Python Package Index.
 
 ```sh
-$ pip3 install kmeans1d
+$ pip3 install optimal1dclustering
 ```
 
 Example Usage
 -------------
 
 ```python
-import kmeans1d
+import optimal1dclustering
 
 x = [4.0, 4.1, 4.2, -50, 200.2, 200.4, 200.9, 80, 100, 102]
 k = 4
 
-clusters, centroids = kmeans1d.cluster(x, k)
+clusters, centroids = optimal1dclustering.cluster(x, k)
 
 print(clusters)   # [1, 1, 1, 0, 3, 3, 3, 2, 2, 2]
 print(centroids)  # [-50.0, 4.1, 94.0, 200.5]
@@ -45,7 +48,7 @@ print(centroids)  # [-50.0, 4.1, 94.0, 200.5]
 Tests
 -----
 
-Tests are in [tests/](https://github.com/dstein64/kmeans1d/blob/master/tests).
+Tests are in [tests/](https://github.com/jan-meissner/optimal1dclustering/blob/master/tests).
 
 ```sh
 # Run tests
@@ -63,7 +66,7 @@ development tools for building Python modules (e.g., the `python3-dev` package o
 $ python3 setup.py build_ext --inplace
 ```
 
-The [packages](https://github.com/dstein64/kmeans1d/blob/master/.github/workflows/packages.yml)
+The [packages](https://github.com/jan-meissner/optimal1dclustering/blob/master/.github/workflows/packages.yml)
 GitHub action can be manually triggered (`Actions` > `packages` > `Run workflow`) to build wheels
 and a source distribution.
 
@@ -72,7 +75,7 @@ License
 
 The code in this repository has an [MIT License](https://en.wikipedia.org/wiki/MIT_License).
 
-See [LICENSE](https://github.com/dstein64/kmeans1d/blob/master/LICENSE).
+See [LICENSE](https://github.com/jan-meissner/optimal1dclustering/blob/master/LICENSE).
 
 References
 ----------

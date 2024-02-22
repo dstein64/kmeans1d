@@ -62,7 +62,7 @@ jobs:
     - name: Typing
       run: |
         python -m pip install mypy
-        python -m mypy kmeans1d
+        python -m mypy optimal1dcluster
 
     - name: Install (ubuntu)
       if: matrix.config.os == 'ubuntu-latest'
@@ -78,4 +78,4 @@ jobs:
     - name: Test
       run: |
         cd tests  # so package is imported from site-packages instead of working directory
-        python -m unittest discover . -v
+        python -m unittest discover tests -v

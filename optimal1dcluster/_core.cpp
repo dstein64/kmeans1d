@@ -6,6 +6,7 @@
 #include <numeric>
 #include <unordered_map>
 #include <vector>
+#include <limits>
 
 using namespace std;
 
@@ -99,28 +100,54 @@ vector<ulong> smawk(
 /*
  *  Calculates cluster costs in O(1) using prefix sum arrays.
  */
+enum class CostCalculationMode {
+    Mean,
+    Median
+};
+
 class CostCalculator {
+    vector<double> x;
     vector<double> cumsum;
     vector<double> cumsum2;
+    CostCalculationMode mode;
+    ulong min_cluster_size;
+    double inf = numeric_limits<double>::infinity();
 
   public:
-    CostCalculator(const vector<double>& vec, ulong n) {
+    CostCalculator(const vector<double>& vec, ulong n, CostCalculationMode mode, ulong min_cluster_size)
+        : x(vec), mode(mode), min_cluster_size(min_cluster_size) {
         cumsum.push_back(0.0);
         cumsum2.push_back(0.0);
         for (ulong i = 0; i < n; ++i) {
-            double x = vec[i];
-            cumsum.push_back(x + cumsum[i]);
-            cumsum2.push_back(x * x + cumsum2[i]);
+            cumsum.push_back(x[i] + cumsum[i]);
+            cumsum2.push_back(x[i] * x[i] + cumsum2[i]);
         }
     }
 
     double calc(ulong i, ulong j) {
-        if (j < i) return 0.0;
-        double mu = (cumsum[j + 1] - cumsum[i]) / (j - i + 1);
-        double result = cumsum2[j + 1] - cumsum2[i];
-        result += (j - i + 1) * (mu * mu);
-        result -= (2 * mu) * (cumsum[j + 1] - cumsum[i]);
-        return result;
+        //if (j < i) return 0.0;
+        if (j < i || j - i + 1 < min_cluster_size) return inf;
+
+        if (mode == CostCalculationMode::Mean) {
+            double mu = (cumsum[j + 1] - cumsum[i]) / (j - i + 1);
+            double result = cumsum2[j + 1] - cumsum2[i];
+            result += (j - i + 1) * (mu * mu);
+            result -= (2 * mu) * (cumsum[j + 1] - cumsum[i]);
+            return result;
+
+        } else {
+            double m_i_j = (j + i) / 2.0;
+            ulong floor_m_i_j = static_cast<ulong>(floor(m_i_j));
+            ulong ceil_m_i_j = static_cast<ulong>(ceil(m_i_j));
+            if (!(i <= floor_m_i_j && floor_m_i_j <= ceil_m_i_j && ceil_m_i_j <= j)) {
+                throw std::runtime_error("Condition violated: i <= floor <= ceil <= j");
+            }
+
+            double centroid = (x[floor_m_i_j] + x[ceil_m_i_j]) / 2.0;
+            double costLeft = centroid * (floor_m_i_j - i + 1) - (cumsum[floor_m_i_j + 1] - cumsum[i]);
+            double costRight = (cumsum[j + 1] - cumsum[floor_m_i_j + 1]) - centroid * (j - floor_m_i_j);
+            return costLeft + costRight;
+        }
     }
 };
 
@@ -162,7 +189,10 @@ void cluster(
         ulong n,
         ulong k,
         ulong* clusters,
-        double* centroids) {
+        double* centroids,
+        ulong min_cluster_size,
+        bool use_mean
+        ) {
     // ***************************************************
     // * Sort input array and save info for de-sorting
     // ***************************************************
@@ -186,7 +216,8 @@ void cluster(
 
     // Algorithm as presented in section 2.2 of (Gronlund et al., 2017).
 
-    CostCalculator cost_calculator(sorted_array, n);
+    CostCalculationMode mode = use_mean ? CostCalculationMode::Mean : CostCalculationMode::Median;
+    CostCalculator cost_calculator(sorted_array, n, mode, min_cluster_size);
     Matrix<double> D(k, n);
     Matrix<ulong> T(k, n);
 
@@ -257,12 +288,12 @@ static PyMethodDef module_methods[] = {
 
 static struct PyModuleDef _coremodule = {
     PyModuleDef_HEAD_INIT,
-    "kmeans1d._core_kmeans",
+    "optimal1dcluster._core",
     NULL,
     -1,
     module_methods,
 };
 
-PyMODINIT_FUNC PyInit__core_kmeans(void) {
+PyMODINIT_FUNC PyInit__core(void) {
     return PyModule_Create(&_coremodule);
 }
