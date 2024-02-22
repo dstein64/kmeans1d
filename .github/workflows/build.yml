@@ -78,4 +78,4 @@ jobs:
     - name: Test
       run: |
         cd tests  # so package is imported from site-packages instead of working directory
-        python -m unittest discover tests -v
+        python -m unittest discover . -v
