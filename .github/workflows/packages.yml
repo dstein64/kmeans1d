@@ -38,7 +38,7 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: packages
+        name: packages-sdist
         path: ./dist
 
   wheels:
@@ -95,5 +95,5 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: packages
+        name: packages-wheels-${{ matrix.runs-on }}
         path: ./dist
