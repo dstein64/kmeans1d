@@ -38,6 +38,12 @@ jobs:
           # Python 3.6 is not supported on GitHub-hosted Ubuntu runners as of Ubuntu 22.04.
           # https://github.com/actions/setup-python/issues/544#issuecomment-1332535877
           - {config: {os: ubuntu-latest}, python-version: '3.6'}
+          # Python versions prior to 3.8 are not supported on GitHub-hosted macOS runners
+          # as of macOS 14.
+          # https://github.com/actions/runner-images/issues/9770
+          - {config: {os: macos-latest}, python-version: '3.5'}
+          - {config: {os: macos-latest}, python-version: '3.6'}
+          - {config: {os: macos-latest}, python-version: '3.7'}
 
     steps:
     - name: Checkout
