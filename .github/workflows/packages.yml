@@ -64,6 +64,9 @@ jobs:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
+        # Python versions prior to 3.8 are not supported on GitHub-hosted macOS
+        # runners as of macOS 14.
+        # https://github.com/actions/runner-images/issues/9770
         python-version: '3.8'
 
     - name: Dependencies
