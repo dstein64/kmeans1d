@@ -55,15 +55,6 @@ jobs:
         #    use a very old distro -- CentOS 6."
         #  - https://github.com/pypa/manylinux
         os: [macos-latest, windows-latest, ubuntu-20.04]
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
-        exclude:
-          # Python versions prior to 3.8 are not supported on GitHub-hosted
-          # macOS runners as of macOS 14.
-          # https://github.com/actions/runner-images/issues/9770
-          - os: macos-latest
-            python-version: '3.6'
-          - os: macos-latest
-            python-version: '3.7'
 
     steps:
     - name: Clone
@@ -75,7 +66,7 @@ jobs:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: '3.8'
 
     - name: Dependencies
       run: python -m pip install --upgrade pip setuptools wheel
