@@ -94,7 +94,7 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: packages-wheels-${{ matrix.os }}-${{ matrix.python-version }}
+        name: packages-wheels-${{ matrix.os }}
         path: ./dist
 
   merge:
