@@ -22,7 +22,7 @@ jobs:
         # When the ref is empty, HEAD will be checked out.
         ref: ${{ github.event.inputs.git-ref }}
 
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.x'
@@ -61,7 +61,7 @@ jobs:
         # When the ref is empty, HEAD will be checked out.
         ref: ${{ github.event.inputs.git-ref }}
 
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python
       uses: actions/setup-python@v5
       with:
         # Python versions prior to 3.8 are not supported on GitHub-hosted macOS
