@@ -4,6 +4,9 @@ import setuptools
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
 
+# We use Python's Limited API, for wheel compatibility across Python minor release versions.
+# (e.g., compatibility across 3.7 and 3.8, but not 4.0). Here we specify the minimum supported
+# version.
 PY_LIMITED_API_MAJOR = 3
 PY_LIMITED_API_MINOR = 2
 
