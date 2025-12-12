@@ -1,4 +1,5 @@
 import os
+import sysconfig
 
 import setuptools
 from setuptools import Extension, setup
@@ -10,6 +11,9 @@ from setuptools.command.build_ext import build_ext
 PY_LIMITED_API_MAJOR = 3
 PY_LIMITED_API_MINOR = 2
 
+# Python's Limited API is incompatible with free-threaded builds.
+# See https://github.com/python/cpython/issues/111506.
+USE_LIMITED_API = sysconfig.get_config_var('Py_GIL_DISABLED') != 1
 
 class BuildExt(build_ext):
     """A custom build extension for adding -stdlib arguments for clang++."""
@@ -32,14 +36,13 @@ class BuildExt(build_ext):
             build_ext.build_extensions(self)
 
 
-extension = Extension(
-    'kmeans1d._core',
-    ['kmeans1d/_core.cpp'],
-    define_macros=[
-        ('Py_LIMITED_API', f'0x{PY_LIMITED_API_MAJOR:02x}{PY_LIMITED_API_MINOR:02x}0000')
-    ],
-    py_limited_api=True,
-)
+extension_kwargs = {}
+if USE_LIMITED_API:
+    extension_kwargs['define_macros'] = [(
+        'Py_LIMITED_API', f'0x{PY_LIMITED_API_MAJOR:02x}{PY_LIMITED_API_MINOR:02x}0000'
+    )]
+    extension_kwargs['py_limited_api'] = True
+extension = Extension('kmeans1d._core', ['kmeans1d/_core.cpp'], **extension_kwargs)
 
 version_txt = os.path.join(os.path.dirname(__file__), 'kmeans1d', 'version.txt')
 with open(version_txt, 'r') as f:
@@ -48,6 +51,11 @@ with open(version_txt, 'r') as f:
 with open('README.md') as f:
     long_description = f.read()
 
+setup_options = {}
+if USE_LIMITED_API:
+    setup_options['bdist_wheel'] = {
+        'py_limited_api': f'cp{PY_LIMITED_API_MAJOR}{PY_LIMITED_API_MINOR}'
+    }
 setup(
     author='Daniel Steinberg',
     author_email='ds@dannyadam.com',
@@ -58,7 +66,6 @@ setup(
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Scientific/Engineering :: Information Analysis',
-        'License :: OSI Approved :: MIT License',
         'Operating System :: Unix',
         'Operating System :: POSIX :: Linux',
         'Operating System :: MacOS',
@@ -73,9 +80,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     name='kmeans1d',
-    options={'bdist_wheel':
-        {'py_limited_api': f'cp{PY_LIMITED_API_MAJOR}{PY_LIMITED_API_MINOR}'}
-    },
+    options=setup_options,
     package_data={'kmeans1d': ['version.txt']},
     packages=['kmeans1d'],
     python_requires='>=3.6',

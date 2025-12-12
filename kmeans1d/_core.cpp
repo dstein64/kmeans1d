@@ -264,5 +264,9 @@ static struct PyModuleDef _coremodule = {
 };
 
 PyMODINIT_FUNC PyInit__core(void) {
-    return PyModule_Create(&_coremodule);
+    PyObject *m = PyModule_Create(&_coremodule);
+#ifdef Py_GIL_DISABLED
+    if (m != NULL) PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
+#endif
+    return m;
 }

@@ -16,7 +16,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        # As of December 12, 2025, arm runners don't have a "latest" variant.
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+          - ubuntu-22.04-arm
+          - windows-11-arm
 
     steps:
     - name: Set up Python
