@@ -25,10 +25,10 @@ class TestKmeans1D(unittest.TestCase):
             # Next, use multithreading so that thread-safety is checked under free-threaded Python.
 
             num_threads = 4
-            jobs_per_thread = 10000
+            iterations_per_thread = 10000
 
             def run():
-                for _ in range(jobs_per_thread):
+                for _ in range(iterations_per_thread):
                     clusters, centroids = cluster(x, k)
                     self.assertEqual(clusters, expected_clusters)
                     self.assertEqual(centroids, expected_centroids)
