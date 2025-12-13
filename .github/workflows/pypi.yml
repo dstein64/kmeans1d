@@ -1,5 +1,5 @@
 # Makes sure that wheels have been uploaded for the latest Python version. #6
-name: wheels
+name: pypi
 # When the 'permissions' key is specified, unspecified permission scopes (e.g.,
 # actions, checks, etc.) are set to no access (none).
 permissions:
@@ -23,12 +23,14 @@ jobs:
           - windows-latest
           - ubuntu-22.04-arm
           - windows-11-arm
+        freethreaded: [false, true]
 
     steps:
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.x'
+        freethreaded: ${{ matrix.freethreaded }}
 
     - name: Check Python version
       run: python --version
@@ -36,11 +38,35 @@ jobs:
     - name: Update pip
       run: python -m pip install --upgrade pip
 
-    - name: Test
+    - name: Test bdist
       shell: pwsh
       run: |
         $ErrorActionPreference = "Stop"
-        $VERSIONS = pip index versions kmeans1d
+        $VERSIONS = python -m pip index versions kmeans1d
         $LATEST = $VERSIONS[0] | ForEach-Object { $_ -replace 'kmeans1d \((.*)\)', '$1' }
-        pip install --only-binary :all: "kmeans1d==$LATEST"
+        python -m pip install --only-binary :all: "kmeans1d==$LATEST"
+        $PIPCODE = $LASTEXITCODE
+        $FREETHREADED = [System.Convert]::ToBoolean('${{ matrix.freethreaded }}')
+        # We currently don't add bdist wheels for free-threaded Python, since it's not compatible
+        # with the Limited API. If you start offering those bdist wheels, the following check will
+        # have to change.
+        if (($PIPCODE -ne 0 -and -not $FREETHREADED) -or ($PIPCODE -eq 0 -and $FREETHREADED)) {
+          throw "error"
+        }
+        # Without specifying the exit code, the step fails when pip exits with a non-zero code. For
+        # free-threaded Python (see comment above), we expect pip to fail, but want the bdist test
+        # to pass.
+        exit 0
+
+    - name: Remove packages
+      shell: pwsh
+      run: python -m pip freeze | ForEach-Object { python -m pip uninstall --yes $_ }
+
+    - name: Test sdist
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = "Stop"
+        $VERSIONS = python -m pip index versions kmeans1d
+        $LATEST = $VERSIONS[0] | ForEach-Object { $_ -replace 'kmeans1d \((.*)\)', '$1' }
+        python -m pip install --no-binary :all: "kmeans1d==$LATEST"
         if ($LASTEXITCODE -ne 0) { throw "error" }
