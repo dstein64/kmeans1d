@@ -25,7 +25,7 @@ class TestKmeans1D(unittest.TestCase):
             # Next, use multithreading so that thread-safety is checked under free-threaded Python.
 
             num_threads = 4
-            iterations_per_thread = 10000
+            iterations_per_thread = 100000
 
             def run():
                 for _ in range(iterations_per_thread):
