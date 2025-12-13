@@ -23,7 +23,7 @@ jobs:
         ref: ${{ github.event.inputs.git-ref }}
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.x'
 
@@ -70,7 +70,7 @@ jobs:
         ref: ${{ github.event.inputs.git-ref }}
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         # Python versions prior to 3.8 are not supported on GitHub-hosted macOS
         # runners as of macOS 14.
