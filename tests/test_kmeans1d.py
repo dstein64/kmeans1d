@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import unittest
 import warnings
 
@@ -14,9 +15,27 @@ class TestKmeans1D(unittest.TestCase):
 
             x = [4.0, 4.1, 4.2, -50, 200.2, 200.4, 200.9, 80, 100, 102]
             k = 4
+            expected_clusters = [1, 1, 1, 0, 3, 3, 3, 2, 2, 2]
+            expected_centroids = [-50.0, 4.1, 94.0, 200.5]
+
             clusters, centroids = cluster(x, k)
-            self.assertEqual(clusters, [1, 1, 1, 0, 3, 3, 3, 2, 2, 2])
-            self.assertEqual(centroids, [-50.0, 4.1, 94.0, 200.5])
+            self.assertEqual(clusters, expected_clusters)
+            self.assertEqual(centroids, expected_centroids)
+
+            # Next, use multithreading so that thread-safety is checked under free-threaded Python.
+
+            num_threads = 4
+            jobs_per_thread = 10000
+
+            def run():
+                for _ in range(jobs_per_thread):
+                    clusters, centroids = cluster(x, k)
+                    self.assertEqual(clusters, expected_clusters)
+                    self.assertEqual(centroids, expected_centroids)
+
+            with ThreadPoolExecutor(max_workers=num_threads) as executor:
+                futures = [executor.submit(run) for _ in range(num_threads)]
+                [f.result() for f in futures]  # this will raise exceptions in the main thread
 
             self.assertEqual(len(caught_warnings), 0, f'Warnings were raised: {caught_warnings}')
 
