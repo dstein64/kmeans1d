@@ -24,6 +24,11 @@ jobs:
           - ubuntu-22.04-arm
           - windows-11-arm
         freethreaded: [false, true]
+        exclude:
+          # As of January 17, 2026, there's an issue running free-threaded Python on arm Windows.
+          # https://github.com/actions/setup-python/issues/1267
+          - os: windows-11-arm
+            freethreaded: true
 
     steps:
     - name: Set up Python
