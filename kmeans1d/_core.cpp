@@ -251,6 +251,64 @@ void cluster(
 }
 } // extern "C"
 
+#ifdef Py_TARGET_ABI3T
+// This follows the abi3t migration guide:
+//   https://docs.python.org/3/howto/abi3t-migration.html
+// PyModuleDef is opaque under abi3t, so the module is defined with slots and
+// exported with a PyModExport hook (PEP 793, PEP 803).
+// The PySlot_PTR* macros are used instead of the guide's PySlot_*DATA, for
+// C++11 (see slots.h, which includes these pointer macros for C++11 and below).
+
+PyABIInfo_VAR(abi_info);
+
+static PySlot module_slots[] = {
+    PySlot_PTR_STATIC(Py_mod_abi, &abi_info),
+    PySlot_PTR_STATIC(Py_mod_name, "kmeans1d._core"),
+    PySlot_PTR(Py_mod_gil, Py_MOD_GIL_NOT_USED),
+    PySlot_PTR(Py_mod_multiple_interpreters,
+               Py_MOD_PER_INTERPRETER_GIL_SUPPORTED),
+    PySlot_END
+};
+
+PyMODEXPORT_FUNC PyModExport__core(void) {
+    return module_slots;
+}
+
+// Workaround for https://github.com/pypa/distutils/issues/387, from
+// https://docs.python.org/3/howto/abi3t-migration.html
+PyMODINIT_FUNC PyInit__core(void) {
+    PyErr_SetString(PyExc_SystemError,
+                    "PyInit__core called for module with PyModExport__core");
+    return NULL;
+}
+#elif !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x030c0000
+// This covers builds where Py_mod_multiple_interpreters is available: those
+// without the Limited API (free-threaded builds on Python 3.13 and 3.14, or on
+// Python 3.15+ with setuptools older than 84.2), and those targeting Python
+// 3.12+ (cp312-abi3). cp32-abi3 uses the #else branch.
+// Subinterpreters with their own GIL require this slot, which Python prior to
+// 3.12 rejects. Slots require PyModuleDef_Init instead of PyModule_Create.
+static PyModuleDef_Slot module_slots[] = {
+    {Py_mod_multiple_interpreters, Py_MOD_PER_INTERPRETER_GIL_SUPPORTED},
+#ifdef Py_GIL_DISABLED
+    {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+#endif
+    {0, NULL}
+};
+
+static struct PyModuleDef _coremodule = {
+    PyModuleDef_HEAD_INIT,
+    "kmeans1d._core",
+    NULL,
+    0,
+    NULL,
+    module_slots,
+};
+
+PyMODINIT_FUNC PyInit__core(void) {
+    return PyModuleDef_Init(&_coremodule);
+}
+#else
 static PyMethodDef module_methods[] = {
     {NULL, NULL, 0, NULL}
 };
@@ -264,9 +322,6 @@ static struct PyModuleDef _coremodule = {
 };
 
 PyMODINIT_FUNC PyInit__core(void) {
-    PyObject *m = PyModule_Create(&_coremodule);
-#ifdef Py_GIL_DISABLED
-    if (m != NULL) PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
-#endif
-    return m;
+    return PyModule_Create(&_coremodule);
 }
+#endif

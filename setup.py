@@ -1,19 +1,19 @@
 import os
+import sys
 import sysconfig
 
 import setuptools
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
 
-# We use Python's Limited API, for wheel compatibility across Python minor release versions
-# (e.g., compatibility across 3.7 and 3.8, but not 4.0). Here we specify the minimum supported
-# version.
-PY_LIMITED_API_MAJOR = 3
-PY_LIMITED_API_MINOR = 2
-
-# Python's Limited API is incompatible with free-threaded builds.
-# See https://github.com/python/cpython/issues/111506.
-USE_LIMITED_API = sysconfig.get_config_var('Py_GIL_DISABLED') != 1
+# Free-threaded builds support the Stable ABI (abi3t) as of Python 3.15 (PEP 803), which
+# setuptools supports as of version 84.2. This follows the abi3t migration guide:
+#   https://docs.python.org/3/howto/abi3t-migration.html
+free_threaded = sysconfig.get_config_var('Py_GIL_DISABLED') == 1
+setuptools_version = tuple(int(x) for x in setuptools.__version__.split('.')[:2])
+use_stable_abi = not free_threaded or (
+    sys.version_info >= (3, 15) and setuptools_version >= (84, 2)
+)
 
 class BuildExt(build_ext):
     """A custom build extension for adding -stdlib arguments for clang++."""
@@ -37,10 +37,24 @@ class BuildExt(build_ext):
 
 
 extension_kwargs = {}
-if USE_LIMITED_API:
+if use_stable_abi:
+    # We use Python's Stable ABI so that one wheel works across Python minor release versions
+    # (e.g., 3.7 and 3.8, but not 4.0). Here we specify the minimum supported version. On
+    # GIL-enabled Python, Py_LIMITED_API selects abi3. On free-threaded Python, Py_TARGET_ABI3T
+    # selects abi3t. The resulting cp315-abi3.abi3t wheel is compatible with both free-threaded and
+    # GIL-enabled builds of Python 3.15 and later.
+    stable_abi_macro = 'Py_TARGET_ABI3T' if free_threaded else 'Py_LIMITED_API'
+    if free_threaded:
+        stable_abi_major, stable_abi_minor = 3, 15
+    elif sys.version_info >= (3, 12):
+        # Subinterpreters with their own GIL require targeting Python 3.12.
+        stable_abi_major, stable_abi_minor = 3, 12
+    else:
+        stable_abi_major, stable_abi_minor = 3, 2
     extension_kwargs['define_macros'] = [(
-        'Py_LIMITED_API', f'0x{PY_LIMITED_API_MAJOR:02x}{PY_LIMITED_API_MINOR:02x}0000'
+        stable_abi_macro, f'0x{stable_abi_major:02x}{stable_abi_minor:02x}0000'
     )]
+    # setuptools uses py_limited_api for both abi3 and abi3t.
     extension_kwargs['py_limited_api'] = True
 extension = Extension('kmeans1d._core', ['kmeans1d/_core.cpp'], **extension_kwargs)
 
@@ -52,9 +66,9 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup_options = {}
-if USE_LIMITED_API:
+if use_stable_abi:
     setup_options['bdist_wheel'] = {
-        'py_limited_api': f'cp{PY_LIMITED_API_MAJOR}{PY_LIMITED_API_MINOR}'
+        'py_limited_api': f'cp{stable_abi_major}{stable_abi_minor}'
     }
 setup(
     author='Daniel Steinberg',

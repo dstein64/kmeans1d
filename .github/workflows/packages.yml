@@ -52,15 +52,17 @@ jobs:
         #    want to make binaries that run on most Linux distros, we have to
         #    use a very old distro -- CentOS 6."
         #  - https://github.com/pypa/manylinux
+        os: [macos-latest, windows-latest, ubuntu-22.04, ubuntu-22.04-arm, windows-11-arm]
+        # 3.11 builds the cp32-abi3 wheel. It's the earliest Python version
+        # available on Windows arm64 runners. 3.12 builds the cp312-abi3 wheel,
+        # for subinterpreters with their own GIL. 3.15t builds the
+        # cp315-abi3.abi3t wheel (PEP 803), for both free-threaded and
+        # GIL-enabled Python 3.15+.
+        python-version: ['3.11', '3.12', '3.15t']
         include:
-          - os: macos-latest
-          - os: windows-latest
-          - os: ubuntu-22.04
-          - os: ubuntu-22.04-arm
-          - os: windows-11-arm
-            # Python 3.11 is the earliest version available for Windows arm64
-            # runners.
-            python-version: '3.11'
+          - {python-version: '3.11', abi: cp32-abi3}
+          - {python-version: '3.12', abi: cp312-abi3}
+          - {python-version: '3.15t', abi: cp315-abi3.abi3t}
 
     steps:
     - name: Clone
@@ -72,10 +74,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
-        # Python versions prior to 3.8 are not supported on GitHub-hosted macOS
-        # runners as of macOS 14.
-        # https://github.com/actions/runner-images/issues/9770
-        python-version: ${{ matrix.python-version || '3.8' }}
+        python-version: ${{ matrix.python-version }}
 
     - name: Dependencies
       run: python -m pip install --upgrade pip setuptools wheel
@@ -86,7 +85,10 @@ jobs:
     - name: manylinux
       if: ${{ startsWith(matrix.os, 'ubuntu-') }}
       run: |
-        python -m pip install --upgrade auditwheel
+        # Newer versions of auditwheel require a version of patchelf that's not
+        # available on Ubuntu 22.04.
+        #   https://github.com/pypa/auditwheel/blob/main/CHANGELOG.md#681
+        python -m pip install --upgrade auditwheel==6.8.0
         python -m auditwheel show dist/*.whl
         # Use manylinux_2_34, as you can't use an older ABI because of the
         # presence of too-recent versioned symbols. To target manylinux2014,
@@ -98,7 +100,7 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: packages-wheels-${{ matrix.os }}
+        name: packages-wheels-${{ matrix.os }}-${{ matrix.abi }}
         path: ./dist
 
   merge:
@@ -110,3 +112,4 @@ jobs:
         with:
           name: packages
           pattern: packages-*
+          delete-merged: true
